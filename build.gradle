@@ -1,3 +1,7 @@
+plugins {
+    id 'maven-publish'
+}
+
 group 'tech.blueglacier'
 version '1.0.5'
 
@@ -10,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    compile([group: 'javax.mail', name: 'mail', version: '1.4.7'],
+    implementation([group: 'javax.mail', name: 'mail', version: '1.4.7'],
             [group: 'net.freeutils', name: 'jcharset', version: '2.0'],
             [group: 'org.apache.james', name: 'apache-mime4j-core', version: '0.8.0'],
             [group: 'org.apache.james', name: 'apache-mime4j-dom', version: '0.8.0'],
@@ -25,7 +29,7 @@ dependencies {
             [group: 'commons-collections', name: 'commons-collections', version: '3.2.2'],
             [group: 'com.google.guava', name: 'guava', version: '23.6-jre']
     )
-    testCompile([group: 'org.testng', name: 'testng', version: '6.11'],
+    testImplementation([group: 'org.testng', name: 'testng', version: '6.11'],
             [group: 'org.mockito', name: 'mockito-all', version: '1.10.19'],
             [group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'])
 }
@@ -49,9 +53,31 @@ task cleanDownloadedDependencies(type: Delete) {
 task copyDependencies(type: Copy) {
     dependsOn cleanDownloadedDependencies
 
-    from configurations.compile
+    from configurations.implementation
     into 'dependencies'
 
-    from configurations.testCompile
+    from configurations.testImplementation
     into 'dependencies'
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/TravelOffice/to-maven-repository")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            groupId = 'com.travel.office'
+            artifactId = 'email-mime-parser'
+            version = '0.0.1'
+
+            from(components.java)
+        }
+    }
 }
