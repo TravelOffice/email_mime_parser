@@ -60,6 +60,12 @@ task copyDependencies(type: Copy) {
     into 'dependencies'
 }
 
+jar {
+    from {
+        configurations.implementation.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
 publishing {
     repositories {
         maven {
