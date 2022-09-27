@@ -6,7 +6,6 @@ import org.apache.james.mime4j.storage.StorageProvider;
 import org.apache.james.mime4j.util.ByteArrayBuffer;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -33,16 +32,15 @@ public class MemoryStorageProvider extends AbstractStorageProvider {
 
     private static final class MemoryStorageOutputStream extends
             StorageOutputStream {
-        ByteArrayBuffer bab = new ByteArrayBuffer(1024);
+        final ByteArrayBuffer bab = new ByteArrayBuffer(1024);
 
         @Override
-        protected void write0(byte[] buffer, int offset, int length)
-                throws IOException {
+        protected void write0(byte[] buffer, int offset, int length) {
             bab.append(buffer, offset, length);
         }
 
         @Override
-        protected Storage toStorage0() throws IOException {
+        protected Storage toStorage0() {
             return new MemoryStorage(bab.buffer(), bab.length());
         }
     }
@@ -56,7 +54,7 @@ public class MemoryStorageProvider extends AbstractStorageProvider {
             this.count = count;
         }
 
-        public InputStream getInputStream() throws IOException {
+        public InputStream getInputStream() {
             if (data == null)
                 throw new IllegalStateException("tech.blueglacier.storage has been deleted");
 

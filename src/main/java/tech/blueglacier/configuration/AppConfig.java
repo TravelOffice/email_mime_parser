@@ -11,8 +11,8 @@ public class AppConfig {
 
 	private volatile static AppConfig objectInstance = null;
 
-	private Configuration appConfig;
-	private Properties charSetMap = null;
+	private final Configuration appConfig;
+	private volatile Properties charSetMap = null;
 
 	private AppConfig() {
 		try {
@@ -39,13 +39,13 @@ public class AppConfig {
 				if (charSetMap == null) {
 					charSetMap = new Properties();
 					String[] arrStr = appConfig.getStringArray("appSettings.charSetFallback");
-					for (int i = 0; i < arrStr.length; i++) {
-						String temp = arrStr[i];
-						String parentCharSet = temp.substring(temp.indexOf(':') + 1, temp.length());
+					for (String value : arrStr) {
+						String temp = value;
+						String parentCharSet = temp.substring(temp.indexOf(':') + 1);
 						temp = temp.substring(0, temp.indexOf(':'));
 						String[] arrChild = temp.split(",");
-						for (int j = 0; j < arrChild.length; j++) {							
-							charSetMap.setProperty(arrChild[j].toLowerCase(), parentCharSet);
+						for (String s : arrChild) {
+							charSetMap.setProperty(s.toLowerCase(), parentCharSet);
 						}
 					}
 				}

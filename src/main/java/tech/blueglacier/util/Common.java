@@ -33,7 +33,7 @@ public class Common {
     }
 
 	private static String getDecodedDispositionFileName(BodyDescriptor bd){
-		String attachmentName = null;
+		String attachmentName;
 		try {
 			attachmentName = ContentDispositionDecoder.decodeDispositionFileName(((MaximalBodyDescriptor)bd).getContentDispositionParameters());
 		} catch (MimeException e) {
@@ -47,11 +47,11 @@ public class Common {
 		return filename;
 	}
 	
-	public static String getAttachmentNameFromContentTypeParmaeters(BodyDescriptor bd) {
+	public static String getAttachmentNameFromContentTypeParameters(BodyDescriptor bd) {
 		String attachmentName = null;
 		if(bd instanceof MaximalBodyDescriptor){
 			Map<String, String> contentTypeParameters = ((MaximalBodyDescriptor)bd).getContentTypeParameters();
-			String nameKey = null;
+			String nameKey;
 			if(contentTypeParameters.containsKey(nameKey = "name") || contentTypeParameters.containsKey(nameKey = "NAME")
 					|| contentTypeParameters.containsKey(nameKey = "Name")){
 				attachmentName = contentTypeParameters.get(nameKey);
@@ -65,8 +65,8 @@ public class Common {
 		// Content tech.blueglacier.disposition 'filename' is more standard, so it's taken as default first
 		String attachmentName = Common.getAttachmentNameFromDispositionParameters(bd);
 		if(attachmentName == null || attachmentName.isEmpty()){			
-			// Content type 'name' is other alternative so it's taken as alternative too
-			attachmentName = Common.getAttachmentNameFromContentTypeParmaeters(bd);			
+			// Content type 'name' is other alternative, so it's taken as alternative too
+			attachmentName = Common.getAttachmentNameFromContentTypeParameters(bd);
 		}		
 		return attachmentName;		
 	}
