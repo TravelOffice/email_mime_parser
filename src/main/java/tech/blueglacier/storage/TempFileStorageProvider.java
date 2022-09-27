@@ -5,13 +5,8 @@ import org.apache.james.mime4j.storage.Storage;
 import org.apache.james.mime4j.storage.StorageOutputStream;
 import org.apache.james.mime4j.storage.StorageProvider;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -96,11 +91,11 @@ public class TempFileStorageProvider extends AbstractStorageProvider {
 
     private static final class TempFileStorageOutputStream extends StorageOutputStream {
         private final File file;
-        private OutputStream out;
+        private final OutputStream out;
 
         public TempFileStorageOutputStream(File file) throws IOException {
             this.file = file;
-            this.out = new FileOutputStream(file);
+            this.out = Files.newOutputStream(file.toPath());
         }
 
         @Override
@@ -115,7 +110,7 @@ public class TempFileStorageProvider extends AbstractStorageProvider {
         }
 
         @Override
-        protected Storage toStorage0() throws IOException {
+        protected Storage toStorage0() {
             // out has already been closed because toStorage calls close
             return new TempFileStorage(file);
         }
@@ -125,7 +120,7 @@ public class TempFileStorageProvider extends AbstractStorageProvider {
 
         private File file;
 
-        private static final Set<File> filesToDelete = new HashSet<File>();
+        private static final Set<File> filesToDelete = new HashSet<>();
 
         public TempFileStorage(File file) {
             this.file = file;
@@ -161,7 +156,7 @@ public class TempFileStorageProvider extends AbstractStorageProvider {
                 throw new IllegalStateException("storage has been deleted");
             }
 
-            return new BufferedInputStream(new FileInputStream(file));
+            return new BufferedInputStream(Files.newInputStream(file.toPath()));
         }
 
     }

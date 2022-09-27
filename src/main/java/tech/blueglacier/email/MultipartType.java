@@ -4,13 +4,13 @@ import org.apache.james.mime4j.stream.BodyDescriptor;
 
 public class MultipartType {
 	
-	private BodyDescriptor bodyDiscriptor;
+	private final BodyDescriptor bodyDescriptor;
 
 	public MultipartType(BodyDescriptor bodyDescriptor){
-		this.bodyDiscriptor = bodyDescriptor; 
+		this.bodyDescriptor = bodyDescriptor;
 	}
 
 	public BodyDescriptor getBodyDescriptor() {
-		return bodyDiscriptor;
+		return bodyDescriptor;
 	}	
 }

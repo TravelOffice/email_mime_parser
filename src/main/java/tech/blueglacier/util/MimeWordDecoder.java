@@ -13,12 +13,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MimeWordDecoder{
 	
-	private static Log log = LogFactory.getLog(DecoderUtil.class);
+	private static final Log log = LogFactory.getLog(DecoderUtil.class);
 	
     private static final Pattern PATTERN_ENCODED_WORD = Pattern.compile(
             "(.*?)=\\?([^\\?]+?)\\?(\\w)\\?([^\\?]+?)\\?=", Pattern.DOTALL);
@@ -48,7 +49,7 @@ public class MimeWordDecoder{
 
     			mimeCharset = Common.getFallbackCharset(mimeCharset);
 
-    			String decoded = null;
+    			String decoded;
     			decoded = tryDecodeEncodedWord(mimeCharset, encoding, encodedText, monitor);
     			if (decoded == null) {
     				sb.append(matcher.group(0));
@@ -179,12 +180,12 @@ public class MimeWordDecoder{
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         try {
-            byte[] bytes = s.getBytes("US-ASCII");
+            byte[] bytes = s.getBytes(StandardCharsets.US_ASCII);
 
             Base64InputStream is = new Base64InputStream(
                                         new ByteArrayInputStream(bytes), monitor);
 
-            int b = 0;
+            int b;
             while ((b = is.read()) != -1) {
                 baos.write(b);
             }
@@ -224,12 +225,12 @@ public class MimeWordDecoder{
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         try {
-            byte[] bytes = s.getBytes("US-ASCII");
+            byte[] bytes = s.getBytes(StandardCharsets.US_ASCII);
 
             QuotedPrintableInputStream is = new QuotedPrintableInputStream(
                                                new ByteArrayInputStream(bytes), monitor);
 
-            int b = 0;
+            int b;
             while ((b = is.read()) != -1) {
                 baos.write(b);
             }

@@ -15,8 +15,8 @@ import java.io.InputStream;
 
 public class EmailParseManager {
 
-	InputStream rawEmailFile;
-	ContentHandler contentHandler;
+	final InputStream rawEmailFile;
+	final ContentHandler contentHandler;
 	
 	public EmailParseManager(InputStream rawEmailFile) {
 		this.rawEmailFile = rawEmailFile;

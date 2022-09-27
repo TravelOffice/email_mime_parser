@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ContentDispositionDecoder {
-	private static boolean decodeParametersStrict = PropUtil.getBooleanSystemProperty("mail.mime.decodeparameters.strict", false);
+	private static final boolean decodeParametersStrict = PropUtil.getBooleanSystemProperty("mail.mime.decodeparameters.strict", false);
 
 	private static ContentDispositionHeaderValue decodeContentDisposition(
 			String headerValue) throws MimeException {
@@ -44,13 +44,9 @@ public class ContentDispositionDecoder {
 			headerValue = headerValue.substring(li + 1);
 			contentDispositionHeaderValue.setCharset(charset);
 			contentDispositionHeaderValue.setValue(decodeBytes(headerValue, charset));
-		} catch (NumberFormatException nex) {
+		} catch (NumberFormatException | StringIndexOutOfBoundsException nex) {
 			if (decodeParametersStrict) {
 				throw new MimeException(nex);
-			}
-		} catch (StringIndexOutOfBoundsException ex) {
-			if (decodeParametersStrict) {
-				throw new MimeException(ex);
 			}
 		}
 		return contentDispositionHeaderValue;
@@ -109,16 +105,14 @@ public class ContentDispositionDecoder {
 
 		Set<String> contentDispositionKeySet = contentDispositionParameters.keySet();
 		String fileName = null;
-		if (contentDispositionKeySet != null) {
-			String[] sortedDispositionFileNameKeys = getSortedStringArray(contentDispositionKeySet.toArray());
-			StringBuilder valueStr = new StringBuilder();
-			for (int i = 0; i < sortedDispositionFileNameKeys.length; i++) {
-				valueStr.append(contentDispositionParameters.get(sortedDispositionFileNameKeys[i]));
-			}
-			String encodedStr = valueStr.toString();
-			if (!encodedStr.isEmpty()) {
-				fileName = decodeContentDisposition(encodedStr).getValue();
-			}
+		String[] sortedDispositionFileNameKeys = getSortedStringArray(contentDispositionKeySet.toArray());
+		StringBuilder valueStr = new StringBuilder();
+		for (String sortedDispositionFileNameKey : sortedDispositionFileNameKeys) {
+			valueStr.append(contentDispositionParameters.get(sortedDispositionFileNameKey));
+		}
+		String encodedStr = valueStr.toString();
+		if (!encodedStr.isEmpty()) {
+			fileName = decodeContentDisposition(encodedStr).getValue();
 		}
 		return fileName;
 	}

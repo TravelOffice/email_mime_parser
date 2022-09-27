@@ -37,13 +37,7 @@ public class CustomUnstructuredFieldImpl extends AbstractField implements Unstru
         parsed = true;
     }
 
-    public static final FieldParser<UnstructuredField> PARSER = new FieldParser<UnstructuredField>() {
-
-        public UnstructuredField parse(final Field rawField, final DecodeMonitor monitor) {
-            return new CustomUnstructuredFieldImpl(rawField, monitor);
-        }
-
-    };
+    public static final FieldParser<UnstructuredField> PARSER = (rawField, monitor) -> new CustomUnstructuredFieldImpl(rawField, monitor);
 
 }
 

@@ -14,7 +14,7 @@ public abstract class AbstractStorageProvider implements StorageProvider {
      * Sole constructor.
      */
     protected AbstractStorageProvider() {
-    	totalBytesTransffered = 0;
+    	totalBytesTransferred = 0;
     }
 
     /**
@@ -33,14 +33,14 @@ public abstract class AbstractStorageProvider implements StorageProvider {
      */
     public final Storage store(InputStream in) throws IOException {
         StorageOutputStream out = createStorageOutputStream();
-        totalBytesTransffered = CodecUtil.copy(in, out);
+        totalBytesTransferred = CodecUtil.copy(in, out);
         return out.toStorage();
     }
     
-    private int totalBytesTransffered;
+    private int totalBytesTransferred;
 
-	public int getTotalBytesTransffered() {
-		return totalBytesTransffered;
+	public int getTotalBytesTransferred() {
+		return totalBytesTransferred;
 	}
 
 }
