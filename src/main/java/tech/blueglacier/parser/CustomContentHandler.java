@@ -14,7 +14,7 @@ import java.io.InputStream;
 
 public class CustomContentHandler extends AbstractContentHandler {
 
-    private Email email;
+    private final Email email;
 
     public CustomContentHandler() {
         this.email = new Email();
@@ -25,12 +25,12 @@ public class CustomContentHandler extends AbstractContentHandler {
     }
 
     @Override
-    public void field(Field field) throws MimeException {
+    public void field(Field field) {
         email.getHeader().addField(field);
     }
 
     @Override
-    public void body(BodyDescriptor bd, InputStream is) throws MimeException, IOException {
+    public void body(BodyDescriptor bd, InputStream is) {
         // Gracefully switching off the case of email attached within an email
         if (email.getMessageStack().peek().getEmailMessageTypeHierarchy() == EmailMessageTypeHierarchy.parent) {
             email.fillEmailContents(bd, is);
@@ -38,7 +38,7 @@ public class CustomContentHandler extends AbstractContentHandler {
     }
 
     @Override
-    public void startMessage() throws MimeException {
+    public void startMessage() {
         if (email.getMessageStack().empty()) {
             email.getMessageStack().push(new EmailMessageType(EmailMessageTypeHierarchy.parent));
         } else {
@@ -54,11 +54,11 @@ public class CustomContentHandler extends AbstractContentHandler {
         email.getMessageStack().pop();
     }
 
-    public void endMultipart() throws MimeException {
+    public void endMultipart() {
         email.getMultipartStack().pop();
     }
 
-    public void startMultipart(BodyDescriptor bd) throws MimeException {
+    public void startMultipart(BodyDescriptor bd) {
         email.getMultipartStack().push(new MultipartType(bd));
     }
 }

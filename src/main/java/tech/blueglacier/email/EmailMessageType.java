@@ -2,7 +2,7 @@ package tech.blueglacier.email;
 
 public class EmailMessageType {
 
-	private EmailMessageTypeHierarchy hierarchy;
+	private final EmailMessageTypeHierarchy hierarchy;
 
 	public EmailMessageTypeHierarchy getEmailMessageTypeHierarchy() {
 		return hierarchy;
